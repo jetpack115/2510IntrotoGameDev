@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My first html</title>
+    <link href="./style.css" rel="stylesheet">
+</head>
+
+<body>
+    <canvas id="canv"></canvas>
+    <script src="scripts.js"></script>
+    <script src="time.js"></script>
+    <script>
+        "use strict"
+
+        let mouseIsDown = false;
+        document.addEventListener("mousedown", mouseDown);
+        document.addEventListener("mouseup", mouseUp);
+
+        function mouseDown() {
+            mouseIsDown = true;
+        }
+
+        function mouseUp() {
+            mouseIsDown = false;
+        }
+
+
+        let gameWon = true
+        let { canvas, ctx } = getCanvas();
+
+
+        //My turn to make somthing cool just a jumping square
+
+        //My first Model
+        let rectangles2 = []
+        let toAdd2 = {};
+        toAdd2.x = 25;
+        toAdd2.y = 300;
+        toAdd2.w = 50;
+        toAdd2.h = 50;
+        toAdd2.r = 85;
+        toAdd2.g = 255;
+        toAdd2.b = 18;
+        rectangles2.push(toAdd2)
+
+
+        //Start Menu
+        let StartofGame = true;
+
+        //Round and speed
+        let round = 1
+        let speed = 10
+
+        //Particle Effects
+        let speedEffects = 1;
+        // This part loads the initial rectangle on the screen so places where you want it
+        let stars = []
+
+        let startXParticles = 100;
+        let startYParticles = 400;
+        let width = 1;
+        let height = 1;
+        let maxParticles = 300;
+
+
+
+
+        //Asteroids
+        let asteroids = []
+        let startXAsteroids = 100;
+        let startYAsteroids = 400;
+        let asteroidWidth = 10;
+        let asteroidHeight = 10;
+        let maxAsteroids = 25;
+        let maxWidth = 400;
+
+        //Lives
+        let lives = []
+        let startxLives = 1350
+        let startyLives = 100
+        let lifeWidth = 20
+        let lifeHeight = 20
+        let maxLives = 3
+
+
+
+
+        //Define the model for particles
+        for (let i = 0; i < maxParticles; i++) {
+
+            let toAdd = {};
+            let h = height
+
+            toAdd.x = Math.floor(Math.random() * 1700) + 0;
+            toAdd.y = Math.floor(Math.random() * 1000) + 0;
+            toAdd.w = width + speedEffects;
+            toAdd.h = h;
+
+            toAdd.r = 255;
+            toAdd.g = 247;
+            toAdd.b = 0;
+
+            stars.push(toAdd)
+        }
+        
+        //Define the model for asteroids
+        for (let i = 0; i < maxAsteroids; i++) {
+
+            let toAdd = {};
+            let h = asteroidHeight
+
+            toAdd.x = Math.floor(Math.random() * 1700) + 0;
+            toAdd.y = Math.floor(Math.random() * 1000) + 0;
+            toAdd.w = asteroidWidth;
+            toAdd.h = asteroidHeight;
+
+            toAdd.r = 92;
+            toAdd.g = 76;
+            toAdd.b = 73;
+
+            asteroids.push(toAdd)
+        }
+
+        //Define the model for lives
+        for (let i = 0; i < maxLives; i++) {
+
+            let toAdd = {};
+            let h = lifeHeight
+
+            toAdd.x = startxLives + (i * 50);
+            toAdd.y = startyLives
+            toAdd.w = lifeWidth;
+            toAdd.h = lifeHeight;
+
+            toAdd.r = 85;
+            toAdd.g = 255;
+            toAdd.b = 18;
+
+            lives.push(toAdd)
+        }
+
+
+
+        function tick() {
+            update()
+            draw()
+        }
+
+        function update() {
+            if (StartofGame)
+            {
+                // Don't make anything yet we havent started
+            }
+            
+            else
+            {
+                for (let star of stars) {
+                
+                    if (star.x > 0)
+                    {
+                        star.x = star.x - speedEffects
+                    }
+                    else
+                    {
+                        star.x = star.x + 1700
+                    }
+                }
+                for (let asteroid of asteroids) {
+
+                    if (asteroid.x > 0)
+                    {
+                        asteroid.x = asteroid.x - speedEffects
+                    }
+
+                }
+                
+            }
+            
+        }
+
+        function draw() {
+
+            // if we havent started the game
+            if (StartofGame)
+            {
+                ctx.fillStyle = "Blue"
+                ctx.strokeStyle = "green"
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                
+                ctx.fillStyle = `rgb(${255}, ${0}, ${0})`
+                ctx.font = "50px Arial";
+                ctx.fillText("Dodge The Asteroids! ", 450, 100);
+                ctx.fillText("Click your mouse to Begin!", 450, 200);
+                if (mouseIsDown)
+                {
+                    StartofGame = false
+                }
+            }
+            else
+            {
+            ctx.fillStyle = "black"
+            ctx.strokeStyle = "green"
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            let i = 0;
+            let j = 0;
+            let k = 0;
+
+            for (let star of stars) {
+                let star = stars[i];
+
+                ctx.fillStyle = `rgb(${star.r},${star.g},${star.b})`
+                ctx.strokeStyle = "white"
+
+                ctx.beginPath()
+                ctx.rect(
+                    star.x,
+                    star.y,
+                    star.w,
+                    star.h
+                )
+                ctx.fill();
+                ctx.stroke();
+                i++;
+
+            }
+
+            for (let asteroid of asteroids) {
+                let asteroid = asteroids[j];
+
+                ctx.fillStyle = `rgb(${asteroid.r},${asteroid.g},${asteroid.b})`
+                ctx.strokeStyle = "white"
+
+                ctx.beginPath()
+                ctx.rect(
+                    asteroid.x,
+                    asteroid.y,
+                    asteroid.w,
+                    asteroid.h
+                )
+                ctx.fill();
+                ctx.stroke();
+                j++;
+
+            }
+
+            for (let live of lives) {
+                let live = lives[k];
+
+                ctx.fillStyle = `rgb(${live.r},${live.g},${live.b})`
+                ctx.strokeStyle = "white"
+
+                ctx.beginPath()
+                ctx.rect(
+                    live.x,
+                    live.y,
+                    live.w,
+                    live.h
+                )
+                ctx.fill();
+                ctx.stroke();
+                k++;
+
+            }            
+
+            
+                //Draw my static square
+                ctx.fillStyle = `rgb(${rectangles2[0].r}, ${rectangles2[0].g}, ${rectangles2[0].b})`
+                ctx.strokeStyle = "white"
+
+                ctx.beginPath()
+                ctx.rect(
+                    rectangles2[0].x,
+                    rectangles2[0].y,
+                    rectangles2[0].w,
+                    rectangles2[0].h
+                )
+                ctx.fill();
+                ctx.stroke();
+
+                //Draw my speed, round, and lives
+                ctx.fillStyle = `rgb(${255}, ${0}, ${0})`
+                ctx.font = "50px Arial";
+                ctx.fillText("Round", 600, 100)
+                ctx.fillText(round, 600, 150);
+                ctx.fillText("Speed",850, 100)
+                ctx.fillText(speed, 850, 150);
+                ctx.fillText("Lives", 1350, 75)
+
+
+
+
+
+                Time.timePassed += Time.secondsBetweenFrame;
+            }
+         }
+
+        setInterval(tick, Time.millisecondsBetweenFrames)
+
+    </script>
+</body>
+
+</html>
