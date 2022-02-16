@@ -39,22 +39,9 @@
         }
 
 
-
-
-
         let gameWon = true
         let { canvas, ctx } = getCanvas();
 
-        // This part loads the initial rectangle on the screen so places where you want it
-        let rectangles = []
-
-        let startX = 100;
-        let startY = 400;
-        let offsetX = 50;
-        let width = 10;
-        let height = 50;
-        let max = 30;
-        let maxWidth = 400;
 
         //My turn to make somthing cool just a jumping square
 
@@ -96,30 +83,48 @@
         toAddp2.b = 0;
         rectanglesp2.push(toAddp2)
 
-        
 
 
 
 
-        //Define the model
-        for (let i = 0; i < max; i++) {
+        //Start Menu
+        let StartofGame = true;
+
+        //Round and speed
+        let round = 1
+        let speed = 10
+
+        //Particle Effects
+        let speedEffects = 1;
+        // This part loads the initial rectangle on the screen so places where you want it
+        let stars = []
+
+        let startXParticles = 100;
+        let startYParticles = 400;
+        let offsetX = 50;
+        let width = 1;
+        let height = 1;
+        let maxParticles = 300;
+        let maxWidth = 400;
+
+        //Define the model for particles
+        for (let i = 0; i < maxParticles; i++) {
 
             let toAdd = {};
-            let percent = i / max;
-            let offset = maxWidth * percent;
-            let h = (1 - (i / max)) * height
+            let h = height
 
-            toAdd.x = startX + offset;
-            toAdd.y = startY - 50 - h / 2;
-            toAdd.w = width + i * 10;
+            toAdd.x = Math.floor(Math.random() * 1700) + 0;
+            toAdd.y = Math.floor(Math.random() * 1000) + 0;
+            toAdd.w = width + speedEffects;
             toAdd.h = h;
 
             toAdd.r = 255;
-            toAdd.g = percent * 255;
+            toAdd.g = 247;
             toAdd.b = 0;
 
-            rectangles.push(toAdd)
+            stars.push(toAdd)
         }
+
 
 
         function tick() {
@@ -128,101 +133,137 @@
         }
 
         function update() {
-            let i = 0
-            for (let rectangle of rectangles) {
-                
-                rectangle.b = 0;
-                if (mouseIsDown)
-                    rectangle.b = 255;
-
-
-                let h = (1 - (i / rectangles.length)) * height
-
-                let percent = i / max;
-                let percentSquared = percent * percent;
-
-                rectangle.y = startY - 50 - h / 2 + ease(Time.timePassed) * 50 * percentSquared;
-
-                i++;
-            }
-            //Let my square move across the screen and jump with clicks
-            rectangles2[0].x = rectangles2[0].x + Time.timePassed
-            //rectangles2[0].y = rectangles2[0].y + Time.timePassed
-            //rectangles2[0].w = rectangles2[0].w + Time.timePassed
-            //rectangles2[0].h = rectangles2[0].h + Time.timePassed
-            if (mouseIsDown)
+            if (StartofGame)
             {
-                rectangles2[0].y = rectangles2[0].y - 3
+                // Don't make anything yet we havent started
             }
-            if (!mouseIsDown)
-            {
-                rectangles2[0].y = rectangles2[0].y + 3
-            }
-            //Find center of portal2 used for our range
-
-            //Bottom of portal2
-            let heightyLocationDifAdd = rectanglesp2[0].y + (rectanglesp2[0].h / 2)
-            //Top of portal2
-            let heightyLocationDifSub = rectanglesp2[0].y - (rectanglesp2[0].h / 2)
-
-            //Find center of square
             
-            //Bottom of square
-            let hLDAdd = rectangles2[0].y + (rectangles2[0].h / 2)
-            //Top of square
-            let hlDSub = rectangles2[0].y - (rectangles2[0].h / 2)
-
-
-            //Condition that passes if square makes it into the final portal
-            if (rectangles2[0].x >= rectanglesp2[0].x && (hlDSub >= heightyLocationDifSub && hLDAdd <= heightyLocationDifAdd ))
+            else
             {
-                // You win
-                // Repostion square to initial spot for level 2
-                rectangles2[0].x = 0
-                rectangles2[0]. y = 300
-
-                //Randaomize the next exit gate
-                rectanglesp2[0].y = Math.floor(Math.random() * 300) + 100
-
-
+                for (let star of stars) {
+                
+                    if (star.x > 0)
+                    {
+                        star.x = star.x - speedEffects
+                    }
+                    else
+                    {
+                        star.x = star.x + 1700
+                    }
             }
-            else if (rectangles2[0].x >= rectanglesp2[0].x)
-            {
-                //lose
-                gameWon = false;
+                
+                
+                
+                
+                
+                
+                //Let my square move across the screen and jump with clicks
+                
+                rectangles2[0].x = rectangles2[0].x + speed
+                //rectangles2[0].y = rectangles2[0].y + Time.timePassed
+                //rectangles2[0].w = rectangles2[0].w + Time.timePassed
+                //rectangles2[0].h = rectangles2[0].h + Time.timePassed
+                if (mouseIsDown)
+                {
+                    rectangles2[0].y = rectangles2[0].y - 3
+                }
+                if (!mouseIsDown)
+                {
+                    rectangles2[0].y = rectangles2[0].y + 3
+                }
+                //Find center of portal2 used for our range
 
+                //Bottom of portal2
+                let heightyLocationDifAdd = rectanglesp2[0].y + (rectanglesp2[0].h)
+                //Top of portal2
+                let heightyLocationDifSub = rectanglesp2[0].y
+
+                //Find center of square
+            
+                //Bottom of square
+                let hLDAdd = rectangles2[0].y + (rectangles2[0].h)
+                //Top of square
+                let hlDSub = rectangles2[0].y
+
+
+                //Condition that passes if square makes it into the final portal
+                if (rectangles2[0].x >= rectanglesp2[0].x && (hlDSub >= heightyLocationDifSub && hLDAdd <= heightyLocationDifAdd ))
+                {
+                    // You win
+                    // Repostion square to initial spot for level 2
+                    rectangles2[0].x = 0
+                    rectangles2[0]. y = 300
+
+                    //Randaomize the next exit gate
+                    rectanglesp2[0].y = Math.floor(Math.random() * 300) + 100
+                    round += 1
+                    speed += round / 25
+                    speedEffects += 1
+
+
+
+
+
+                }
+                else if (rectangles2[0].x >= rectanglesp2[0].x || rectangles2[0].y < 0)
+                {
+                    //lose
+                    StartofGame = true;
+                    rectangles2[0].x = 0
+                    rectangles2[0]. y = 300
+                    rectangles2[0].x = 0
+                    speed = 10
+                    round = 1
+                    speedEffects = 1
+                }
             }
-            //else if (!mouseIsDown)
-            //{
-            //    
-            //}
             
         }
 
         function draw() {
 
+            // if we havent started the game
+            if (StartofGame)
+            {
+                ctx.fillStyle = "Blue"
+                ctx.strokeStyle = "green"
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                
+                ctx.fillStyle = `rgb(${255}, ${0}, ${0})`
+                ctx.font = "50px Arial";
+                ctx.fillText("Welcome to Crazy Square", 450, 100);
+                ctx.fillText("Click your mouse to Begin!", 450, 200);
+                if (mouseIsDown)
+                {
+                    StartofGame = false
+                }
+            }
+            else
+            {
             ctx.fillStyle = "black"
             ctx.strokeStyle = "green"
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
             let i = 0;
-            for (let rectangle of rectangles) {
-                let rectangle = rectangles[i];
 
-                ctx.fillStyle = `rgb(${rectangle.r},${rectangle.g},${rectangle.b})`
+            for (let star of stars) {
+                let star = stars[i];
+
+                ctx.fillStyle = `rgb(${star.r},${star.g},${star.b})`
                 ctx.strokeStyle = "white"
 
                 ctx.beginPath()
                 ctx.rect(
-                    rectangle.x,
-                    rectangle.y,
-                    rectangle.w,
-                    rectangle.h
+                    star.x,
+                    star.y,
+                    star.w,
+                    star.h
                 )
                 ctx.fill();
                 ctx.stroke();
                 i++;
 
             }
+
             //Draw portal 1
             ctx.fillStyle = `rgb(${rectanglesp1[0].r}, ${rectanglesp1[0].g}, ${rectanglesp1[0].b})`
             ctx.strokeStyle = "white"
@@ -247,34 +288,40 @@
                 rectanglesp2[0].y,
                 rectanglesp2[0].w,
                 rectanglesp2[0].h
-            )
-            ctx.fill();
-            ctx.stroke();
+                )
+                ctx.fill();
+                ctx.stroke();
 
             
-            //Draw my static square
-            ctx.fillStyle = `rgb(${rectangles2[0].r}, ${rectangles2[0].g}, ${rectangles2[0].b})`
-            ctx.strokeStyle = "white"
+                //Draw my static square
+                ctx.fillStyle = `rgb(${rectangles2[0].r}, ${rectangles2[0].g}, ${rectangles2[0].b})`
+                ctx.strokeStyle = "white"
 
-            ctx.beginPath()
-            ctx.rect(
-                rectangles2[0].x,
-                rectangles2[0].y,
-                rectangles2[0].w,
-                rectangles2[0].h
-            )
-            ctx.fill();
-            ctx.stroke();
+                ctx.beginPath()
+                ctx.rect(
+                    rectangles2[0].x,
+                    rectangles2[0].y,
+                    rectangles2[0].w,
+                    rectangles2[0].h
+                )
+                ctx.fill();
+                ctx.stroke();
 
-            if (!gameWon)
-            {
+                //Draw my speed and round
                 ctx.fillStyle = `rgb(${255}, ${0}, ${0})`
-                ctx.font = "200px Arial";
-                ctx.fillText("YOU LOSE", 175, 400);
-                die("Sorry")
+                ctx.font = "50px Arial";
+                ctx.fillText("Round", 600, 100)
+                ctx.fillText(round, 600, 150);
+                ctx.fillText("Speed",850, 100)
+                ctx.fillText(speed, 850, 150);
+
+                //Draw speed effects
+
+
+
+
+                Time.timePassed += Time.secondsBetweenFrame;
             }
-            
-            Time.timePassed += Time.secondsBetweenFrame;
          }
 
         setInterval(tick, Time.millisecondsBetweenFrames)
