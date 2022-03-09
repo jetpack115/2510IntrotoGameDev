@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My first html</title>
+    <link href="./style.css" rel="stylesheet">
+</head>
+
+<body>
+    <canvas id="canv"></canvas>
+    <!-- <script src="./engine/scripts.js"></script>
+    <script src="./engine/time.js"></script>
+    <script src="./engine/Component.js"></script>
+    <script src="./engine/GameObject.js"></script>
+    <script src="./engine/RectangleDrawComponent.js"></script>
+    <script src="./zen_game/RectangleUpdateComponent.js"></script>
+    <script src="./zen_game/RectangleGameObject.js"></script> -->
+
+    <script type="module">
+        "use strict"
+        import { getCanvas, ease, bounce } from "./engine/scripts.js"
+        import Time from "./engine/Time.js"
+        import GameObject from "./engine/GameObject.js"
+        import Component from "./engine/Component.js"
+
+        import PlayerDrawComponent from "./zen_game/PlayerDrawComponent.js"
+
+        import PlayerGameObject from "./zen_game/PlayerGameObject.js";
+        import PlayerUpdateComponent from "./zen_game/PlayerUpdateComponent.js";
+
+        import Constants from "./zen_game/Constants.js"
+        
+        import ParticleDrawComponent from "./zen_game/ParticleDrawComponent.js"
+        import ParticleGameObject from "./zen_game/ParticleGameObject.js";
+        import ParticleUpdateComponent from "./zen_game/ParticleUpdateComponent.js";
+
+        import AsteroidGameObject from "./zen_game/AsteroidGameObject.js";
+        import AsteroidUpdateComponent from "./zen_game/AsteroidUpdateComponent.js";
+        import AsteroidDrawComponent from "./zen_game/AsteroidDrawComponent.js";
+
+        import LifeGameObject from "./zen_game/LifeGameObject.js";
+        import LifeUpdateComponent from "./zen_game/LifeUpdateComponent.js";
+        import LifeDrawComponent from "./zen_game/LifeDrawComponent.js";
+
+        
+
+
+        let mouseIsDown = false;
+        document.addEventListener("mousedown", mouseDown);
+        document.addEventListener("mouseup", mouseUp);
+
+
+        function mouseDown() {
+            mouseIsDown = true;
+            mouseEvent();
+        }
+
+        function mouseUp() {
+            mouseIsDown = false;
+            mouseEvent()
+        }
+
+        function mouseEvent() {
+            for (let object of gameObjects2) {
+                for (let component of object.components) {
+                    if (component.mouseEvent) {
+                        component.mouseEvent();
+                    }
+                }
+            }
+        }
+
+
+
+        let { canvas, ctx } = getCanvas();
+
+        let gameObjects = []
+        let gameObjects2 = []
+        let asteroidObjects = []
+        let lifeObjects = []
+
+        let max = Constants.max;
+        let maxWidth = Constants.maxWidth;
+        let height = Constants.height;
+        let startX = Constants.startX;
+        let startY = Constants.startY;
+        let width = Constants.width;
+
+        //Initialize The player object
+        let playerHeight = Constants.playerHeight;
+        let playerWidth = Constants.playerWidth;
+        let playerStartX = Constants.playerStartX;
+        let playerStartY = Constants.playerStartY;
+
+        //Initialize the asteroids
+        let startXAsteroids = Constants.startXAsteroids;
+        let startYAsteroids = Constants.startYAsteroids;
+        let startAsteroidWidth = Constants.startAsteroidWidth;
+        let startAsteroidHeight = Constants.startAsteroidHeight;
+        let maxAsteroids = Constants.maxAsteroids;
+        let maxSizeAsteroids = Constants.maxSizeAsteroids;
+
+        //Lives
+        let startxLives = Constants.startxLives;
+        let startyLives = Constants.startyLives;
+        let lifeWidth = Constants.lifeWidth;
+        let lifeHeight = Constants.lifeHeight;
+        let maxLives = Constants.maxLives;
+
+        //End Gates
+        let firstGatex = Constants.firstGatex;
+        let firstGatey = Constants.firstGatey;
+        let gateWidth = Constants.gateWidth;
+        let gateHeight = Constants.gateHeight;
+        let maxGates = Constants.maxGates;
+
+        //Star Particles
+        let startXParticles = Constants.startXParticles;
+        let startYParticles = Constants.startYParticles;
+        let particleWidth = Constants.particleWidth;
+        let particleHeight = Constants.particleHeight;
+        let maxParticles = Constants.maxParticles;
+        let stars = [];
+
+        //Start level
+        let startLevel = Constants.startLevel;
+
+        //Asteroids passed
+        let asteroidspassed = 0
+        
+        
+        //Define Player Model
+        let pR = 85;
+        let pG = 255;
+        let pB = 18;
+        gameObjects2.push(new PlayerGameObject(playerStartX,playerStartY,playerWidth,playerHeight,pR,pG,pB,startLevel))
+
+        //Define Particle Model
+        for (let i = 0; i < maxParticles; i++) {
+
+            let h = particleHeight
+
+            let x = Math.floor(Math.random() * 1700) + 0;
+            let y = Math.floor(Math.random() * 1000) + 0;
+            let w = particleWidth + startLevel;
+
+            let r = 255;
+            let g = 247;
+            let b = 0;
+
+            stars.push(new ParticleGameObject(x,y,w,h,r,g,b,startLevel))
+        }
+
+        // Define asteroid objects
+        for (let i = 0; i < maxAsteroids; i++) {
+
+            let h = startAsteroidHeight
+
+            let x = Math.floor(Math.random() * 1700) + 500;
+            let y = Math.floor(Math.random() * 1000) + 0;
+            let w = startAsteroidWidth;
+
+            let r = 255;
+            let g = 0;
+            let b = 0;
+
+            asteroidObjects.push(new AsteroidGameObject(x,y,w,h,r,g,b,startLevel))
+        }
+
+        // Define lifes model
+        for (let i = 0; i < maxLives; i++) {
+
+            let x = startxLives + (i * 50);
+            let y = startyLives
+            let w = lifeWidth;
+            let h = lifeHeight;
+
+            let r = 85;
+            let g = 255;
+            let b = 18;
+
+            lifeObjects.push(new LifeGameObject(x,y,w,h,r,g,b))
+        }
+
+
+
+        function tick() {
+            update()
+            draw()
+            Time.timePassed += Time.secondsBetweenFrame;
+        }
+
+        function update() {
+            for (let star of stars) {
+                star.update();
+            }
+            for (let gameobject2 of gameObjects2) {
+                gameobject2.update();
+            }
+            for (let asteroid of asteroidObjects){
+                asteroid.update();
+            }
+            for (let life of lifeObjects){
+                life.update();
+            }
+        }
+
+        function draw() {
+
+            ctx.fillStyle = "black"
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            for (let star of stars) {
+                star.draw(ctx);
+            }
+            for (let asteroid of asteroidObjects){
+                asteroid.draw(ctx);
+            }
+            for (let gameobject2s of gameObjects2){
+                gameobject2s.draw(ctx)
+            }
+            for (let life of lifeObjects){
+                life.draw(ctx);
+            }
+
+        }
+
+        setInterval(tick, Time.millisecondsBetweenFrames)
+
+    </script>
+</body>
+
+</html>
