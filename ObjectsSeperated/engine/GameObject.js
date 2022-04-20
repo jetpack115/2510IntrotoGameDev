@@ -1,13 +1,21 @@
 class GameObject{
-  constructor(){
+  constructor(name = "NO_NAME"){
     this.components = [];
+    this.markForDelete = false;
+    this.name = name;
+    this.visible = true;
+    this.layer = 0;
   }
-  update(){
-    this.components.filter(c=>c.update).forEach(c=>c.update());
+  update(ctx){
+    this.components.filter(c=>c.update).forEach(c=>c.update(ctx));
   }
   draw(ctx){
-    this.components.filter(c=>c.draw).forEach(c=>c.draw());
+    this.components.filter(c=>c.draw).forEach(c=>c.draw(ctx));
   }
+  getComponent(componentString){
+    return this.components.find(c=>c.constructor.name == componentString);
+  }
+
 }
 
 export default GameObject;

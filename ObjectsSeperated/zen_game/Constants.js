@@ -44,6 +44,12 @@ class Constants{
   static particleHeight = 1;
   static maxParticles = 300;
 
+  //Laser starter attributes
+  static laserX = -1
+  static laserY = -1
+  static laserWidth = 50
+  static laserHeight = 10
+
   //Misc Important Stuff
   static startLevel = 1;
 }

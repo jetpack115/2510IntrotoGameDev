@@ -1,40 +1,44 @@
 import Component from "../engine/Component.js"
 import Constants from "./Constants.js"
-import {ease} from "../engine/scripts.js"
-import Time from "../engine/Time.js"
+import Input from "../engine/Input.js"
 
 
 class PlayerUpdateComponent extends Component {
-  constructor(parent, x, y, w, h, r, g, b, startLevel) {
+  constructor(parent) {
     super(parent);
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.startLevel = startLevel
-    this.mouseDown = false
+    this.startLevel = Constants.startLevel;
+    //this.mouseDown = false
   }
   update() {
+    let rectangle = this.parent.getComponent("Rectangle");
+
+
     //If mouse is down go up
-    if (this.mouseDown) {
+    if (Input.getKey("ArrowDown")) {
       //Condition if player is off screen from bottom
-      this.y = this.y + this.startLevel;
-      if (this.y > 680 + this.h) 
+      rectangle.y = rectangle.y + this.startLevel;
+      if (rectangle.y > 680 + rectangle.h) 
       {
-        this.y = 0;
+        rectangle.y = 0;
       } 
     }
-    else if (!this.mouseDown)
+    if (Input.getKey("ArrowUp"))
     {
-      this.y = this.y - this.startLevel
+      rectangle.y = rectangle.y - this.startLevel
 
-      if (this.y < 0 - this.h)
+      if (rectangle.y < 0 - rectangle.h)
       {
-        this.y = 680;
+        rectangle.y = 680;
       }
+    }
+    if (Input.getKey("ArrowLeft") && rectangle.x >= 0)
+    {
+      rectangle.x = rectangle.x - this.startLevel
+
+    }
+    if (Input.getKey("ArrowRight"))
+    {
+      rectangle.x = rectangle.x + this.startLevel
     }
     
   }

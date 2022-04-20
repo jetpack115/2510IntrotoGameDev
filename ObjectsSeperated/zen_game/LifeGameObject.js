@@ -1,19 +1,15 @@
-import Component from "../engine/Component.js"
 import GameObject from "../engine/GameObject.js"
 import LifeUpdateComponent from "./LifeUpdateComponent.js";
-import LifeDrawComponent from "./LifeDrawComponent.js";
+import Rectangle from "../engine/Rectangle.js";
+import RectangleDraw from "../engine/RectangleDraw.js";
 
 class LifeGameObject extends GameObject{
-  constructor(x,y,w,h,r,g,b){
+  constructor(x,y,w,h){
     super();
-    this.components.push(new LifeUpdateComponent(this,x,y,w,h,r,g,b));
-    this.components.push(new LifeDrawComponent(this));
-  }
-  update(){
-    this.components.filter(c=>c.update).forEach(c=>c.update());
-  }
-  draw(ctx){
-    this.components.filter(c=>c.draw).forEach(c=>c.draw(ctx));
+    this.components.push(new Rectangle(this,x,y,w,h))
+    this.components.push(new RectangleDraw(this, "Green", "yellow"))
+    this.components.push(new LifeUpdateComponent(this));
+
   }
 }
 
